@@ -24,6 +24,9 @@
 * ANALOG_INPUT
 */
 #define __S2_Panopto_Serial_Processor_v1_0_DEBUG_ANALOG_INPUT 1
+#define __S2_Panopto_Serial_Processor_v1_0_START_MAXEARLY_ANALOG_INPUT 2
+#define __S2_Panopto_Serial_Processor_v1_0_EXTEND_MINREMAINING_ANALOG_INPUT 3
+#define __S2_Panopto_Serial_Processor_v1_0_EXTEND_MINBUFFER_ANALOG_INPUT 4
 
 
 #define __S2_Panopto_Serial_Processor_v1_0_PANOPTO_SERIAL_RX_BUFFER_INPUT 0
@@ -192,6 +195,9 @@ START_NVRAM_VAR_STRUCT( S2_Panopto_Serial_Processor_v1_0 )
 {
    DECLARE_STRING_STRUCT( S2_Panopto_Serial_Processor_v1_0, __GS_RECORDERSTATE );
    DECLARE_STRING_STRUCT( S2_Panopto_Serial_Processor_v1_0, __GS_RECORDERSTATE_SIMPLE );
+   unsigned short __GI_START_MAXEARLY;
+   unsigned short __GI_EXTEND_MINREMAINING;
+   unsigned short __GI_EXTEND_MINBUFFER;
 };
 
 
