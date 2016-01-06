@@ -10,7 +10,7 @@ Programmer:          Tim Batzel
 /*******************************************************************************************
 Compiler Directives
 *******************************************************************************************/
-#CATEGORY "46" "Custom Modules"
+#CATEGORY "46" "Panopto Remote Recorder"
 #PRINT_TO_TRACE
 #DEFAULT_VOLATILE
 #ENABLE_STACK_CHECKING
