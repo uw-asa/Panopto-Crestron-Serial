@@ -161,12 +161,19 @@ FUNCTION ShowCommands() {
 		else {show_cmd_resume = 0;}
 
 		// Show Extend  
-		if (((gs_RecorderState = "Recording") || (gs_RecorderState = "Paused")) && ((RecToEnd) && (QueToStart) && ((RecToEnd+7)<QueToStart) && (RecToEnd<20))) {
-			show_cmd_extend = 1;
-			}
+		if (((gs_RecorderState = "Recording") || (gs_RecorderState = "Paused")) && (RecToEnd)) {
+			// If there is a queued recording
+			if (QueToStart) {
+				if (((RecToEnd+7)<QueToStart) && (RecToEnd<20)) {show_cmd_extend = 1;}
+				}
+			// No queued recording
+			else if (RecToEnd<20) {show_cmd_extend = 1;}
+		}
 		else {show_cmd_extend = 0;}
 
-		}	
+
+
+    }
 	else { // Don't enable command buttons.
 		show_cmd_start = 0;
 		show_cmd_stop = 0;

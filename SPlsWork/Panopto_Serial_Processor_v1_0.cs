@@ -238,15 +238,36 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
                     } 
                 
                 __context__.SourceCodeLine = 164;
-                if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt (_SplusNVRAM.GS_RECORDERSTATE == "Recording") ) || Functions.TestForTrue ( Functions.BoolToInt (_SplusNVRAM.GS_RECORDERSTATE == "Paused") )) ) ) && Functions.TestForTrue ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt ( (Functions.TestForTrue ( RECTOEND ) && Functions.TestForTrue ( QUETOSTART )) ) ) && Functions.TestForTrue ( Functions.BoolToInt ( (RECTOEND + 7) < QUETOSTART ) )) ) ) && Functions.TestForTrue ( Functions.BoolToInt ( RECTOEND < 20 ) )) ) )) ))  ) ) 
+                if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt (_SplusNVRAM.GS_RECORDERSTATE == "Recording") ) || Functions.TestForTrue ( Functions.BoolToInt (_SplusNVRAM.GS_RECORDERSTATE == "Paused") )) ) ) && Functions.TestForTrue ( RECTOEND )) ))  ) ) 
                     { 
-                    __context__.SourceCodeLine = 165;
-                    SHOW_CMD_EXTEND  .Value = (ushort) ( 1 ) ; 
+                    __context__.SourceCodeLine = 166;
+                    if ( Functions.TestForTrue  ( ( QUETOSTART)  ) ) 
+                        { 
+                        __context__.SourceCodeLine = 167;
+                        if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt ( (RECTOEND + 7) < QUETOSTART ) ) && Functions.TestForTrue ( Functions.BoolToInt ( RECTOEND < 20 ) )) ))  ) ) 
+                            { 
+                            __context__.SourceCodeLine = 167;
+                            SHOW_CMD_EXTEND  .Value = (ushort) ( 1 ) ; 
+                            } 
+                        
+                        } 
+                    
+                    else 
+                        {
+                        __context__.SourceCodeLine = 170;
+                        if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( RECTOEND < 20 ))  ) ) 
+                            { 
+                            __context__.SourceCodeLine = 170;
+                            SHOW_CMD_EXTEND  .Value = (ushort) ( 1 ) ; 
+                            } 
+                        
+                        }
+                    
                     } 
                 
                 else 
                     { 
-                    __context__.SourceCodeLine = 167;
+                    __context__.SourceCodeLine = 172;
                     SHOW_CMD_EXTEND  .Value = (ushort) ( 0 ) ; 
                     } 
                 
@@ -254,15 +275,15 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
             
             else 
                 { 
-                __context__.SourceCodeLine = 171;
+                __context__.SourceCodeLine = 178;
                 SHOW_CMD_START  .Value = (ushort) ( 0 ) ; 
-                __context__.SourceCodeLine = 172;
+                __context__.SourceCodeLine = 179;
                 SHOW_CMD_STOP  .Value = (ushort) ( 0 ) ; 
-                __context__.SourceCodeLine = 173;
+                __context__.SourceCodeLine = 180;
                 SHOW_CMD_PAUSE  .Value = (ushort) ( 0 ) ; 
-                __context__.SourceCodeLine = 174;
+                __context__.SourceCodeLine = 181;
                 SHOW_CMD_RESUME  .Value = (ushort) ( 0 ) ; 
-                __context__.SourceCodeLine = 175;
+                __context__.SourceCodeLine = 182;
                 SHOW_CMD_EXTEND  .Value = (ushort) ( 0 ) ; 
                 } 
             
@@ -272,102 +293,102 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
         private void UPDATERECORDINGDATA (  SplusExecutionContext __context__ ) 
             { 
             
-            __context__.SourceCodeLine = 188;
+            __context__.SourceCodeLine = 195;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt (GS_RECORDING_ID == GS_QUEUED_RECORDING_ID))  ) ) 
                 { 
-                __context__.SourceCodeLine = 189;
+                __context__.SourceCodeLine = 196;
                 CLEARQUERECORDINGDATA (  __context__  ) ; 
                 } 
             
-            __context__.SourceCodeLine = 193;
+            __context__.SourceCodeLine = 200;
             if ( Functions.TestForTrue  ( ( Functions.Not( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt (_SplusNVRAM.GS_RECORDERSTATE_SIMPLE == "Recording") ) || Functions.TestForTrue ( Functions.BoolToInt (_SplusNVRAM.GS_RECORDERSTATE_SIMPLE == "Paused") )) ) ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 194;
+                __context__.SourceCodeLine = 201;
                 CLEARRECORDINGDATA (  __context__  ) ; 
                 } 
             
-            __context__.SourceCodeLine = 198;
+            __context__.SourceCodeLine = 205;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( GI_STATUS_COUNT_REC > 5 ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 199;
+                __context__.SourceCodeLine = 206;
                 CLEARRECORDINGDATA (  __context__  ) ; 
-                __context__.SourceCodeLine = 200;
+                __context__.SourceCodeLine = 207;
                 GI_STATUS_COUNT_REC = (ushort) ( 1 ) ; 
                 } 
             
-            __context__.SourceCodeLine = 203;
+            __context__.SourceCodeLine = 210;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( GI_STATUS_COUNT_QUE > 5 ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 204;
+                __context__.SourceCodeLine = 211;
                 CLEARQUERECORDINGDATA (  __context__  ) ; 
-                __context__.SourceCodeLine = 205;
+                __context__.SourceCodeLine = 212;
                 GI_STATUS_COUNT_QUE = (ushort) ( 1 ) ; 
                 } 
             
-            __context__.SourceCodeLine = 210;
+            __context__.SourceCodeLine = 217;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt (GS_QUEUED_RECORDING_MINUTESUNTILSTARTTIME == "2") ) || Functions.TestForTrue ( Functions.BoolToInt (GS_QUEUED_RECORDING_MINUTESUNTILSTARTTIME == "1") )) ) ) || Functions.TestForTrue ( Functions.BoolToInt (GS_QUEUED_RECORDING_MINUTESUNTILSTARTTIME == "0") )) ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 211;
+                __context__.SourceCodeLine = 218;
                 RECORDING_ABOUTTOSTART  .Value = (ushort) ( 1 ) ; 
                 } 
             
             else 
                 { 
-                __context__.SourceCodeLine = 213;
+                __context__.SourceCodeLine = 220;
                 RECORDING_ABOUTTOSTART  .Value = (ushort) ( 0 ) ; 
                 } 
             
-            __context__.SourceCodeLine = 216;
-            RECORDING_ID  .UpdateValue ( GS_RECORDING_ID  ) ; 
-            __context__.SourceCodeLine = 217;
-            RECORDING_NAME  .UpdateValue ( GS_RECORDING_NAME  ) ; 
-            __context__.SourceCodeLine = 218;
-            RECORDING_STARTTIME  .UpdateValue ( GS_RECORDING_STARTTIME  ) ; 
-            __context__.SourceCodeLine = 219;
-            RECORDING_ENDTIME  .UpdateValue ( GS_RECORDING_ENDTIME  ) ; 
-            __context__.SourceCodeLine = 220;
-            RECORDING_MINUTESUNTILSTARTTIME  .UpdateValue ( GS_RECORDING_MINUTESUNTILSTARTTIME  ) ; 
-            __context__.SourceCodeLine = 221;
-            RECORDING_MINUTESUNTILENDTIME  .UpdateValue ( GS_RECORDING_MINUTESUNTILENDTIME  ) ; 
             __context__.SourceCodeLine = 223;
-            QUEUED_RECORDING_ID  .UpdateValue ( GS_QUEUED_RECORDING_ID  ) ; 
+            RECORDING_ID  .UpdateValue ( GS_RECORDING_ID  ) ; 
             __context__.SourceCodeLine = 224;
-            QUEUED_RECORDING_NAME  .UpdateValue ( GS_QUEUED_RECORDING_NAME  ) ; 
+            RECORDING_NAME  .UpdateValue ( GS_RECORDING_NAME  ) ; 
             __context__.SourceCodeLine = 225;
-            QUEUED_RECORDING_STARTTIME  .UpdateValue ( GS_QUEUED_RECORDING_STARTTIME  ) ; 
+            RECORDING_STARTTIME  .UpdateValue ( GS_RECORDING_STARTTIME  ) ; 
             __context__.SourceCodeLine = 226;
-            QUEUED_RECORDING_ENDTIME  .UpdateValue ( GS_QUEUED_RECORDING_ENDTIME  ) ; 
+            RECORDING_ENDTIME  .UpdateValue ( GS_RECORDING_ENDTIME  ) ; 
             __context__.SourceCodeLine = 227;
-            QUEUED_RECORDING_MINUTESUNTILSTARTTIME  .UpdateValue ( GS_QUEUED_RECORDING_MINUTESUNTILSTARTTIME  ) ; 
+            RECORDING_MINUTESUNTILSTARTTIME  .UpdateValue ( GS_RECORDING_MINUTESUNTILSTARTTIME  ) ; 
             __context__.SourceCodeLine = 228;
-            QUEUED_RECORDING_MINUTESUNTILENDTIME  .UpdateValue ( GS_QUEUED_RECORDING_MINUTESUNTILENDTIME  ) ; 
+            RECORDING_MINUTESUNTILENDTIME  .UpdateValue ( GS_RECORDING_MINUTESUNTILENDTIME  ) ; 
+            __context__.SourceCodeLine = 230;
+            QUEUED_RECORDING_ID  .UpdateValue ( GS_QUEUED_RECORDING_ID  ) ; 
+            __context__.SourceCodeLine = 231;
+            QUEUED_RECORDING_NAME  .UpdateValue ( GS_QUEUED_RECORDING_NAME  ) ; 
             __context__.SourceCodeLine = 232;
+            QUEUED_RECORDING_STARTTIME  .UpdateValue ( GS_QUEUED_RECORDING_STARTTIME  ) ; 
+            __context__.SourceCodeLine = 233;
+            QUEUED_RECORDING_ENDTIME  .UpdateValue ( GS_QUEUED_RECORDING_ENDTIME  ) ; 
+            __context__.SourceCodeLine = 234;
+            QUEUED_RECORDING_MINUTESUNTILSTARTTIME  .UpdateValue ( GS_QUEUED_RECORDING_MINUTESUNTILSTARTTIME  ) ; 
+            __context__.SourceCodeLine = 235;
+            QUEUED_RECORDING_MINUTESUNTILENDTIME  .UpdateValue ( GS_QUEUED_RECORDING_MINUTESUNTILENDTIME  ) ; 
+            __context__.SourceCodeLine = 239;
             if ( Functions.TestForTrue  ( ( Functions.Length( GS_RECORDING_ID ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 232;
+                __context__.SourceCodeLine = 239;
                 HAS_RECORDING_DATA  .Value = (ushort) ( 1 ) ; 
                 } 
             
             else 
                 { 
-                __context__.SourceCodeLine = 232;
+                __context__.SourceCodeLine = 239;
                 HAS_RECORDING_DATA  .Value = (ushort) ( 0 ) ; 
                 } 
             
-            __context__.SourceCodeLine = 233;
+            __context__.SourceCodeLine = 240;
             if ( Functions.TestForTrue  ( ( Functions.Length( GS_QUEUED_RECORDING_ID ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 233;
+                __context__.SourceCodeLine = 240;
                 HAS_QUEUED_DATA  .Value = (ushort) ( 1 ) ; 
                 } 
             
             else 
                 { 
-                __context__.SourceCodeLine = 233;
+                __context__.SourceCodeLine = 240;
                 HAS_QUEUED_DATA  .Value = (ushort) ( 0 ) ; 
                 } 
             
-            __context__.SourceCodeLine = 236;
+            __context__.SourceCodeLine = 243;
             SHOWCOMMANDS (  __context__  ) ; 
             
             }
@@ -380,58 +401,58 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
             ushort DIFFTIME = 0;
             
             
-            __context__.SourceCodeLine = 246;
-            PANOPTO_SERIAL_TX  .UpdateValue ( SCMD + "\r\n"  ) ; 
-            __context__.SourceCodeLine = 247;
-            GI_ALLOWCMD = (ushort) ( 0 ) ; 
-            __context__.SourceCodeLine = 248;
-            SHOWCOMMANDS (  __context__  ) ; 
-            __context__.SourceCodeLine = 252;
-            NOWTIME = (ushort) ( Functions.GetHSeconds() ) ; 
             __context__.SourceCodeLine = 253;
-            NEWTIME = (ushort) ( (NOWTIME + (30 * 100)) ) ; 
+            PANOPTO_SERIAL_TX  .UpdateValue ( SCMD + "\r\n"  ) ; 
+            __context__.SourceCodeLine = 254;
+            GI_ALLOWCMD = (ushort) ( 0 ) ; 
             __context__.SourceCodeLine = 255;
+            SHOWCOMMANDS (  __context__  ) ; 
+            __context__.SourceCodeLine = 259;
+            NOWTIME = (ushort) ( Functions.GetHSeconds() ) ; 
+            __context__.SourceCodeLine = 260;
+            NEWTIME = (ushort) ( (NOWTIME + (30 * 100)) ) ; 
+            __context__.SourceCodeLine = 262;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( NEWTIME > NOWTIME ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 256;
+                __context__.SourceCodeLine = 263;
                 while ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt (GI_ALLOWCMD == 0) ) && Functions.TestForTrue ( Functions.BoolToInt ( NEWTIME > NOWTIME ) )) ))  ) ) 
                     { 
-                    __context__.SourceCodeLine = 257;
+                    __context__.SourceCodeLine = 264;
                     NOWTIME = (ushort) ( Functions.GetHSeconds() ) ; 
-                    __context__.SourceCodeLine = 256;
+                    __context__.SourceCodeLine = 263;
                     } 
                 
                 } 
             
             else 
                 {
-                __context__.SourceCodeLine = 260;
+                __context__.SourceCodeLine = 267;
                 if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( NEWTIME < NOWTIME ))  ) ) 
                     { 
-                    __context__.SourceCodeLine = 261;
+                    __context__.SourceCodeLine = 268;
                     OLDTIME = (ushort) ( NOWTIME ) ; 
-                    __context__.SourceCodeLine = 262;
+                    __context__.SourceCodeLine = 269;
                     while ( Functions.TestForTrue  ( ( Functions.BoolToInt (GI_ALLOWCMD == 0))  ) ) 
                         { 
-                        __context__.SourceCodeLine = 263;
+                        __context__.SourceCodeLine = 270;
                         if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt ( NOWTIME > NEWTIME ) ) && Functions.TestForTrue ( Functions.BoolToInt ( NOWTIME < OLDTIME ) )) ))  ) ) 
                             { 
-                            __context__.SourceCodeLine = 264;
+                            __context__.SourceCodeLine = 271;
                             GI_ALLOWCMD = (ushort) ( 1 ) ; 
                             } 
                         
-                        __context__.SourceCodeLine = 266;
+                        __context__.SourceCodeLine = 273;
                         NOWTIME = (ushort) ( Functions.GetHSeconds() ) ; 
-                        __context__.SourceCodeLine = 262;
+                        __context__.SourceCodeLine = 269;
                         } 
                     
                     } 
                 
                 }
             
-            __context__.SourceCodeLine = 270;
+            __context__.SourceCodeLine = 277;
             GI_ALLOWCMD = (ushort) ( 1 ) ; 
-            __context__.SourceCodeLine = 271;
+            __context__.SourceCodeLine = 278;
             SHOWCOMMANDS (  __context__  ) ; 
             
             }
@@ -439,41 +460,41 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
         private void SETRECORDERSTATE (  SplusExecutionContext __context__, CrestronString SSTATE ) 
             { 
             
-            __context__.SourceCodeLine = 281;
+            __context__.SourceCodeLine = 288;
             _SplusNVRAM.GS_RECORDERSTATE  .UpdateValue ( SSTATE  ) ; 
-            __context__.SourceCodeLine = 282;
+            __context__.SourceCodeLine = 289;
             RECORDERSTATE  .UpdateValue ( _SplusNVRAM.GS_RECORDERSTATE  ) ; 
-            __context__.SourceCodeLine = 285;
+            __context__.SourceCodeLine = 292;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SSTATE == "Disconnected"))  ) ) 
                 { 
-                __context__.SourceCodeLine = 285;
+                __context__.SourceCodeLine = 292;
                 GI_ALLOWCMD = (ushort) ( 0 ) ; 
                 } 
             
             else 
                 {
-                __context__.SourceCodeLine = 286;
+                __context__.SourceCodeLine = 293;
                 if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SSTATE == "Blocked"))  ) ) 
                     { 
-                    __context__.SourceCodeLine = 286;
+                    __context__.SourceCodeLine = 293;
                     GI_ALLOWCMD = (ushort) ( 0 ) ; 
                     } 
                 
                 else 
                     {
-                    __context__.SourceCodeLine = 287;
+                    __context__.SourceCodeLine = 294;
                     if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SSTATE == "Faulted"))  ) ) 
                         { 
-                        __context__.SourceCodeLine = 287;
+                        __context__.SourceCodeLine = 294;
                         GI_ALLOWCMD = (ushort) ( 0 ) ; 
                         } 
                     
                     else 
                         { 
-                        __context__.SourceCodeLine = 289;
+                        __context__.SourceCodeLine = 296;
                         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SSTATE != _SplusNVRAM.GS_RECORDERSTATE_SIMPLE))  ) ) 
                             { 
-                            __context__.SourceCodeLine = 289;
+                            __context__.SourceCodeLine = 296;
                             GI_ALLOWCMD = (ushort) ( 1 ) ; 
                             } 
                         
@@ -483,43 +504,43 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
                 
                 }
             
-            __context__.SourceCodeLine = 293;
+            __context__.SourceCodeLine = 300;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SSTATE == "PreviewingQueued"))  ) ) 
                 { 
-                __context__.SourceCodeLine = 293;
+                __context__.SourceCodeLine = 300;
                 _SplusNVRAM.GS_RECORDERSTATE_SIMPLE  .UpdateValue ( "Previewing"  ) ; 
                 } 
             
             else 
                 {
-                __context__.SourceCodeLine = 294;
+                __context__.SourceCodeLine = 301;
                 if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SSTATE == "StoppingPaused"))  ) ) 
                     { 
-                    __context__.SourceCodeLine = 294;
+                    __context__.SourceCodeLine = 301;
                     _SplusNVRAM.GS_RECORDERSTATE_SIMPLE  .UpdateValue ( "Paused"  ) ; 
                     } 
                 
                 else 
                     {
-                    __context__.SourceCodeLine = 295;
+                    __context__.SourceCodeLine = 302;
                     if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SSTATE == "StoppingRecord"))  ) ) 
                         { 
-                        __context__.SourceCodeLine = 295;
+                        __context__.SourceCodeLine = 302;
                         _SplusNVRAM.GS_RECORDERSTATE_SIMPLE  .UpdateValue ( "Recording"  ) ; 
                         } 
                     
                     else 
                         {
-                        __context__.SourceCodeLine = 296;
+                        __context__.SourceCodeLine = 303;
                         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SSTATE == "Stopped"))  ) ) 
                             { 
-                            __context__.SourceCodeLine = 296;
+                            __context__.SourceCodeLine = 303;
                             _SplusNVRAM.GS_RECORDERSTATE_SIMPLE  .UpdateValue ( "Previewing"  ) ; 
                             } 
                         
                         else 
                             { 
-                            __context__.SourceCodeLine = 298;
+                            __context__.SourceCodeLine = 305;
                             _SplusNVRAM.GS_RECORDERSTATE_SIMPLE  .UpdateValue ( SSTATE  ) ; 
                             } 
                         
@@ -529,9 +550,9 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
                 
                 }
             
-            __context__.SourceCodeLine = 300;
+            __context__.SourceCodeLine = 307;
             RECORDERSTATESIMPLE  .UpdateValue ( _SplusNVRAM.GS_RECORDERSTATE_SIMPLE  ) ; 
-            __context__.SourceCodeLine = 302;
+            __context__.SourceCodeLine = 309;
             SHOWCOMMANDS (  __context__  ) ; 
             
             }
@@ -545,16 +566,16 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
             ushort I2 = 0;
             
             
-            __context__.SourceCodeLine = 313;
+            __context__.SourceCodeLine = 320;
             I1 = (ushort) ( (Functions.Length( SFINDTAG ) + 1) ) ; 
-            __context__.SourceCodeLine = 314;
+            __context__.SourceCodeLine = 321;
             I2 = (ushort) ( (Functions.Length( SDATA ) - I1) ) ; 
-            __context__.SourceCodeLine = 315;
+            __context__.SourceCodeLine = 322;
             TEMP  .UpdateValue ( Functions.Mid ( SDATA ,  (int) ( I1 ) ,  (int) ( I2 ) )  ) ; 
-            __context__.SourceCodeLine = 318;
+            __context__.SourceCodeLine = 325;
             if ( Functions.TestForTrue  ( ( Functions.Find( "Recording-" , SDATA ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 319;
+                __context__.SourceCodeLine = 326;
                 
                     {
                     int __SPLS_TMPVAR__SWTCH_1__ = ((int)TAG);
@@ -562,39 +583,39 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
                         { 
                         if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_1__ == ( 1) ) ) ) 
                             { 
-                            __context__.SourceCodeLine = 320;
+                            __context__.SourceCodeLine = 327;
                             GS_RECORDING_ID  .UpdateValue ( TEMP  ) ; 
-                            __context__.SourceCodeLine = 320;
+                            __context__.SourceCodeLine = 327;
                             GI_STATUS_COUNT_REC = (ushort) ( 0 ) ; 
                             } 
                         
                         else if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_1__ == ( 2) ) ) ) 
                             { 
-                            __context__.SourceCodeLine = 321;
+                            __context__.SourceCodeLine = 328;
                             GS_RECORDING_NAME  .UpdateValue ( TEMP  ) ; 
                             } 
                         
                         else if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_1__ == ( 3) ) ) ) 
                             { 
-                            __context__.SourceCodeLine = 322;
+                            __context__.SourceCodeLine = 329;
                             GS_RECORDING_STARTTIME  .UpdateValue ( TEMP  ) ; 
                             } 
                         
                         else if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_1__ == ( 4) ) ) ) 
                             { 
-                            __context__.SourceCodeLine = 323;
+                            __context__.SourceCodeLine = 330;
                             GS_RECORDING_ENDTIME  .UpdateValue ( TEMP  ) ; 
                             } 
                         
                         else if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_1__ == ( 5) ) ) ) 
                             { 
-                            __context__.SourceCodeLine = 324;
+                            __context__.SourceCodeLine = 331;
                             GS_RECORDING_MINUTESUNTILSTARTTIME  .UpdateValue ( TEMP  ) ; 
                             } 
                         
                         else if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_1__ == ( 6) ) ) ) 
                             { 
-                            __context__.SourceCodeLine = 325;
+                            __context__.SourceCodeLine = 332;
                             GS_RECORDING_MINUTESUNTILENDTIME  .UpdateValue ( TEMP  ) ; 
                             } 
                         
@@ -605,10 +626,10 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
                 
                 } 
             
-            __context__.SourceCodeLine = 330;
+            __context__.SourceCodeLine = 337;
             if ( Functions.TestForTrue  ( ( Functions.Find( "Queued-" , SDATA ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 331;
+                __context__.SourceCodeLine = 338;
                 
                     {
                     int __SPLS_TMPVAR__SWTCH_2__ = ((int)TAG);
@@ -616,39 +637,39 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
                         { 
                         if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_2__ == ( 1) ) ) ) 
                             { 
-                            __context__.SourceCodeLine = 332;
+                            __context__.SourceCodeLine = 339;
                             GS_QUEUED_RECORDING_ID  .UpdateValue ( TEMP  ) ; 
-                            __context__.SourceCodeLine = 332;
+                            __context__.SourceCodeLine = 339;
                             GI_STATUS_COUNT_QUE = (ushort) ( 0 ) ; 
                             } 
                         
                         else if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_2__ == ( 2) ) ) ) 
                             { 
-                            __context__.SourceCodeLine = 333;
+                            __context__.SourceCodeLine = 340;
                             GS_QUEUED_RECORDING_NAME  .UpdateValue ( TEMP  ) ; 
                             } 
                         
                         else if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_2__ == ( 3) ) ) ) 
                             { 
-                            __context__.SourceCodeLine = 334;
+                            __context__.SourceCodeLine = 341;
                             GS_QUEUED_RECORDING_STARTTIME  .UpdateValue ( TEMP  ) ; 
                             } 
                         
                         else if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_2__ == ( 4) ) ) ) 
                             { 
-                            __context__.SourceCodeLine = 335;
+                            __context__.SourceCodeLine = 342;
                             GS_QUEUED_RECORDING_ENDTIME  .UpdateValue ( TEMP  ) ; 
                             } 
                         
                         else if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_2__ == ( 5) ) ) ) 
                             { 
-                            __context__.SourceCodeLine = 336;
+                            __context__.SourceCodeLine = 343;
                             GS_QUEUED_RECORDING_MINUTESUNTILSTARTTIME  .UpdateValue ( TEMP  ) ; 
                             } 
                         
                         else if  ( Functions.TestForTrue  (  ( __SPLS_TMPVAR__SWTCH_2__ == ( 6) ) ) ) 
                             { 
-                            __context__.SourceCodeLine = 337;
+                            __context__.SourceCodeLine = 344;
                             GS_QUEUED_RECORDING_MINUTESUNTILENDTIME  .UpdateValue ( TEMP  ) ; 
                             } 
                         
@@ -670,171 +691,171 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
             FINDTAG  = new CrestronString( Crestron.Logos.SplusObjects.CrestronStringEncoding.eEncodingASCII, 100, this );
             
             
-            __context__.SourceCodeLine = 350;
+            __context__.SourceCodeLine = 357;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( DEBUG  .UshortValue >= 1 ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 350;
+                __context__.SourceCodeLine = 357;
                 Trace( "ParseData: {0}", DEBUGPRINTHEX (  __context__ , SDATA) ) ; 
                 } 
             
-            __context__.SourceCodeLine = 353;
+            __context__.SourceCodeLine = 360;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "Disconnected OK\u000A"))  ) ) 
                 { 
-                __context__.SourceCodeLine = 353;
+                __context__.SourceCodeLine = 360;
                 SETRECORDERSTATE (  __context__ , "Disconnected") ; 
                 } 
             
-            __context__.SourceCodeLine = 355;
+            __context__.SourceCodeLine = 362;
             if ( Functions.TestForTrue  ( ( Functions.Find( "Recorder" , SDATA ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 357;
+                __context__.SourceCodeLine = 364;
                 if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "RecorderPreviewing OK\u000A"))  ) ) 
                     { 
-                    __context__.SourceCodeLine = 357;
+                    __context__.SourceCodeLine = 364;
                     SETRECORDERSTATE (  __context__ , "Previewing") ; 
                     } 
                 
                 else 
                     {
-                    __context__.SourceCodeLine = 358;
+                    __context__.SourceCodeLine = 365;
                     if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "RecorderPreviewingQueued OK\u000A"))  ) ) 
                         { 
-                        __context__.SourceCodeLine = 358;
+                        __context__.SourceCodeLine = 365;
                         SETRECORDERSTATE (  __context__ , "PreviewingQueued") ; 
                         } 
                     
                     else 
                         {
-                        __context__.SourceCodeLine = 359;
+                        __context__.SourceCodeLine = 366;
                         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "RecorderRecording OK\u000A"))  ) ) 
                             { 
-                            __context__.SourceCodeLine = 359;
+                            __context__.SourceCodeLine = 366;
                             SETRECORDERSTATE (  __context__ , "Recording") ; 
                             } 
                         
                         else 
                             {
-                            __context__.SourceCodeLine = 360;
+                            __context__.SourceCodeLine = 367;
                             if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "RecorderPaused OK\u000A"))  ) ) 
                                 { 
-                                __context__.SourceCodeLine = 360;
+                                __context__.SourceCodeLine = 367;
                                 SETRECORDERSTATE (  __context__ , "Paused") ; 
                                 } 
                             
                             else 
                                 {
-                                __context__.SourceCodeLine = 361;
+                                __context__.SourceCodeLine = 368;
                                 if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "RecorderStopped OK\u000A"))  ) ) 
                                     { 
-                                    __context__.SourceCodeLine = 361;
+                                    __context__.SourceCodeLine = 368;
                                     SETRECORDERSTATE (  __context__ , "Stopped") ; 
                                     } 
                                 
                                 else 
                                     {
-                                    __context__.SourceCodeLine = 362;
+                                    __context__.SourceCodeLine = 369;
                                     if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "RecorderRunning OK\u000A"))  ) ) 
                                         { 
-                                        __context__.SourceCodeLine = 362;
+                                        __context__.SourceCodeLine = 369;
                                         SETRECORDERSTATE (  __context__ , "Blocked") ; 
                                         } 
                                     
                                     else 
                                         {
-                                        __context__.SourceCodeLine = 363;
+                                        __context__.SourceCodeLine = 370;
                                         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "RecorderFaulted OK\u000A"))  ) ) 
                                             { 
-                                            __context__.SourceCodeLine = 363;
+                                            __context__.SourceCodeLine = 370;
                                             SETRECORDERSTATE (  __context__ , "Faulted") ; 
                                             } 
                                         
                                         else 
                                             {
-                                            __context__.SourceCodeLine = 365;
+                                            __context__.SourceCodeLine = 372;
                                             if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "Recorder-Status: RRDisconnected\u000A"))  ) ) 
                                                 { 
-                                                __context__.SourceCodeLine = 365;
+                                                __context__.SourceCodeLine = 372;
                                                 SETRECORDERSTATE (  __context__ , "Disconnected") ; 
                                                 } 
                                             
                                             else 
                                                 {
-                                                __context__.SourceCodeLine = 366;
+                                                __context__.SourceCodeLine = 373;
                                                 if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "Recorder-Status: RRPreviewing\u000A"))  ) ) 
                                                     { 
-                                                    __context__.SourceCodeLine = 366;
+                                                    __context__.SourceCodeLine = 373;
                                                     SETRECORDERSTATE (  __context__ , "Previewing") ; 
                                                     } 
                                                 
                                                 else 
                                                     {
-                                                    __context__.SourceCodeLine = 367;
+                                                    __context__.SourceCodeLine = 374;
                                                     if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "Recorder-Status: RRPreviewingQueued\u000A"))  ) ) 
                                                         { 
-                                                        __context__.SourceCodeLine = 367;
+                                                        __context__.SourceCodeLine = 374;
                                                         SETRECORDERSTATE (  __context__ , "PreviewingQueued") ; 
                                                         } 
                                                     
                                                     else 
                                                         {
-                                                        __context__.SourceCodeLine = 368;
+                                                        __context__.SourceCodeLine = 375;
                                                         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "Recorder-Status: RRRecording\u000A"))  ) ) 
                                                             { 
-                                                            __context__.SourceCodeLine = 368;
+                                                            __context__.SourceCodeLine = 375;
                                                             SETRECORDERSTATE (  __context__ , "Recording") ; 
                                                             } 
                                                         
                                                         else 
                                                             {
-                                                            __context__.SourceCodeLine = 369;
+                                                            __context__.SourceCodeLine = 376;
                                                             if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "Recorder-Status: RRPaused\u000A"))  ) ) 
                                                                 { 
-                                                                __context__.SourceCodeLine = 369;
+                                                                __context__.SourceCodeLine = 376;
                                                                 SETRECORDERSTATE (  __context__ , "Paused") ; 
                                                                 } 
                                                             
                                                             else 
                                                                 {
-                                                                __context__.SourceCodeLine = 370;
+                                                                __context__.SourceCodeLine = 377;
                                                                 if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "Recorder-Status: RRStopped\u000A"))  ) ) 
                                                                     { 
-                                                                    __context__.SourceCodeLine = 370;
+                                                                    __context__.SourceCodeLine = 377;
                                                                     SETRECORDERSTATE (  __context__ , "Stopped") ; 
                                                                     } 
                                                                 
                                                                 else 
                                                                     {
-                                                                    __context__.SourceCodeLine = 371;
+                                                                    __context__.SourceCodeLine = 378;
                                                                     if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "Recorder-Status: RRRunning\u000A"))  ) ) 
                                                                         { 
-                                                                        __context__.SourceCodeLine = 371;
+                                                                        __context__.SourceCodeLine = 378;
                                                                         SETRECORDERSTATE (  __context__ , "Blocked") ; 
                                                                         } 
                                                                     
                                                                     else 
                                                                         {
-                                                                        __context__.SourceCodeLine = 372;
+                                                                        __context__.SourceCodeLine = 379;
                                                                         if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "Recorder-Status: RRFaulted\u000A"))  ) ) 
                                                                             { 
-                                                                            __context__.SourceCodeLine = 372;
+                                                                            __context__.SourceCodeLine = 379;
                                                                             SETRECORDERSTATE (  __context__ , "Faulted") ; 
                                                                             } 
                                                                         
                                                                         else 
                                                                             {
-                                                                            __context__.SourceCodeLine = 373;
+                                                                            __context__.SourceCodeLine = 380;
                                                                             if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "Recorder-Status: RRStoppingPaused\u000A"))  ) ) 
                                                                                 { 
-                                                                                __context__.SourceCodeLine = 373;
+                                                                                __context__.SourceCodeLine = 380;
                                                                                 SETRECORDERSTATE (  __context__ , "StoppingPaused") ; 
                                                                                 } 
                                                                             
                                                                             else 
                                                                                 {
-                                                                                __context__.SourceCodeLine = 374;
+                                                                                __context__.SourceCodeLine = 381;
                                                                                 if ( Functions.TestForTrue  ( ( Functions.BoolToInt (SDATA == "Recorder-Status: RRStoppingRecord\u000A"))  ) ) 
                                                                                     { 
-                                                                                    __context__.SourceCodeLine = 374;
+                                                                                    __context__.SourceCodeLine = 381;
                                                                                     SETRECORDERSTATE (  __context__ , "StoppingRecord") ; 
                                                                                     } 
                                                                                 
@@ -872,52 +893,52 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
                 
                 } 
             
-            __context__.SourceCodeLine = 379;
+            __context__.SourceCodeLine = 386;
             if ( Functions.TestForTrue  ( ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt ( (Functions.TestForTrue ( Functions.BoolToInt (_SplusNVRAM.GS_RECORDERSTATE_SIMPLE == "Recording") ) || Functions.TestForTrue ( Functions.BoolToInt (_SplusNVRAM.GS_RECORDERSTATE_SIMPLE == "Paused") )) ) ) && Functions.TestForTrue ( Functions.Find( "Recording-" , SDATA ) )) ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 380;
+                __context__.SourceCodeLine = 387;
                 ushort __FN_FORSTART_VAL__1 = (ushort) ( 1 ) ;
                 ushort __FN_FOREND_VAL__1 = (ushort)6; 
                 int __FN_FORSTEP_VAL__1 = (int)1; 
                 for ( I  = __FN_FORSTART_VAL__1; (__FN_FORSTEP_VAL__1 > 0)  ? ( (I  >= __FN_FORSTART_VAL__1) && (I  <= __FN_FOREND_VAL__1) ) : ( (I  <= __FN_FORSTART_VAL__1) && (I  >= __FN_FOREND_VAL__1) ) ; I  += (ushort)__FN_FORSTEP_VAL__1) 
                     { 
-                    __context__.SourceCodeLine = 381;
+                    __context__.SourceCodeLine = 388;
                     MakeString ( FINDTAG , "Recording-{0}: ", GS_RECORDING_TAG [ I ] ) ; 
-                    __context__.SourceCodeLine = 382;
+                    __context__.SourceCodeLine = 389;
                     if ( Functions.TestForTrue  ( ( Functions.Find( FINDTAG , SDATA ))  ) ) 
                         { 
-                        __context__.SourceCodeLine = 382;
+                        __context__.SourceCodeLine = 389;
                         PARSERECORDINGDATA (  __context__ , FINDTAG, (ushort)( I ), SDATA) ; 
                         } 
                     
-                    __context__.SourceCodeLine = 383;
+                    __context__.SourceCodeLine = 390;
                     Functions.ProcessLogic ( ) ; 
-                    __context__.SourceCodeLine = 380;
+                    __context__.SourceCodeLine = 387;
                     } 
                 
                 } 
             
-            __context__.SourceCodeLine = 388;
+            __context__.SourceCodeLine = 395;
             if ( Functions.TestForTrue  ( ( Functions.Find( "Queued-" , SDATA ))  ) ) 
                 { 
-                __context__.SourceCodeLine = 389;
+                __context__.SourceCodeLine = 396;
                 ushort __FN_FORSTART_VAL__2 = (ushort) ( 1 ) ;
                 ushort __FN_FOREND_VAL__2 = (ushort)6; 
                 int __FN_FORSTEP_VAL__2 = (int)1; 
                 for ( I  = __FN_FORSTART_VAL__2; (__FN_FORSTEP_VAL__2 > 0)  ? ( (I  >= __FN_FORSTART_VAL__2) && (I  <= __FN_FOREND_VAL__2) ) : ( (I  <= __FN_FORSTART_VAL__2) && (I  >= __FN_FOREND_VAL__2) ) ; I  += (ushort)__FN_FORSTEP_VAL__2) 
                     { 
-                    __context__.SourceCodeLine = 390;
+                    __context__.SourceCodeLine = 397;
                     MakeString ( FINDTAG , "Queued-{0}: ", GS_RECORDING_TAG [ I ] ) ; 
-                    __context__.SourceCodeLine = 391;
+                    __context__.SourceCodeLine = 398;
                     if ( Functions.TestForTrue  ( ( Functions.Find( FINDTAG , SDATA ))  ) ) 
                         { 
-                        __context__.SourceCodeLine = 391;
+                        __context__.SourceCodeLine = 398;
                         PARSERECORDINGDATA (  __context__ , FINDTAG, (ushort)( I ), SDATA) ; 
                         } 
                     
-                    __context__.SourceCodeLine = 392;
+                    __context__.SourceCodeLine = 399;
                     Functions.ProcessLogic ( ) ; 
-                    __context__.SourceCodeLine = 389;
+                    __context__.SourceCodeLine = 396;
                     } 
                 
                 } 
@@ -935,29 +956,29 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
                 ushort NEXTCHAR = 0;
                 
                 
-                __context__.SourceCodeLine = 406;
+                __context__.SourceCodeLine = 413;
                 do 
                     { 
-                    __context__.SourceCodeLine = 407;
+                    __context__.SourceCodeLine = 414;
                     NEXTCHAR = (ushort) ( Functions.GetC( PANOPTO_SERIAL_RX ) ) ; 
-                    __context__.SourceCodeLine = 408;
+                    __context__.SourceCodeLine = 415;
                     GS_TEMP_PANOPTO_SERIAL_RX  .UpdateValue ( GS_TEMP_PANOPTO_SERIAL_RX + Functions.Chr (  (int) ( NEXTCHAR ) )  ) ; 
-                    __context__.SourceCodeLine = 409;
+                    __context__.SourceCodeLine = 416;
                     if ( Functions.TestForTrue  ( ( Functions.BoolToInt (NEXTCHAR == 10))  ) ) 
                         { 
-                        __context__.SourceCodeLine = 410;
+                        __context__.SourceCodeLine = 417;
                         PARSEDATA (  __context__ , GS_TEMP_PANOPTO_SERIAL_RX) ; 
-                        __context__.SourceCodeLine = 411;
+                        __context__.SourceCodeLine = 418;
                         GS_TEMP_PANOPTO_SERIAL_RX  .UpdateValue ( ""  ) ; 
-                        __context__.SourceCodeLine = 412;
+                        __context__.SourceCodeLine = 419;
                         Functions.Delay (  (int) ( 1 ) ) ; 
                         } 
                     
-                    __context__.SourceCodeLine = 414;
+                    __context__.SourceCodeLine = 421;
                     Functions.Delay (  (int) ( 1 ) ) ; 
                     } 
                 while (false == ( Functions.TestForTrue  (  (int) ( Functions.BoolToInt (Functions.Length( PANOPTO_SERIAL_RX ) == 0) ) ) )); 
-                __context__.SourceCodeLine = 416;
+                __context__.SourceCodeLine = 423;
                 UPDATERECORDINGDATA (  __context__  ) ; 
                 
                 
@@ -976,7 +997,7 @@ namespace UserModule_PANOPTO_SERIAL_PROCESSOR_V1_0
         {
             SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
             
-            __context__.SourceCodeLine = 422;
+            __context__.SourceCodeLine = 429;
             SENDCOMMAND (  __context__ , "start") ; 
             
             
@@ -995,7 +1016,7 @@ object CMD_STOP_OnPush_2 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 423;
+        __context__.SourceCodeLine = 430;
         SENDCOMMAND (  __context__ , "stop") ; 
         
         
@@ -1014,7 +1035,7 @@ object CMD_PAUSE_OnPush_3 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 424;
+        __context__.SourceCodeLine = 431;
         SENDCOMMAND (  __context__ , "pause") ; 
         
         
@@ -1033,7 +1054,7 @@ object CMD_RESUME_OnPush_4 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 425;
+        __context__.SourceCodeLine = 432;
         SENDCOMMAND (  __context__ , "resume") ; 
         
         
@@ -1052,7 +1073,7 @@ object CMD_EXTEND_OnPush_5 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 426;
+        __context__.SourceCodeLine = 433;
         SENDCOMMAND (  __context__ , "extend") ; 
         
         
@@ -1071,11 +1092,11 @@ object GET_STATUS_OnPush_6 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 430;
+        __context__.SourceCodeLine = 437;
         PANOPTO_SERIAL_TX  .UpdateValue ( "status\r\n"  ) ; 
-        __context__.SourceCodeLine = 431;
+        __context__.SourceCodeLine = 438;
         GI_STATUS_COUNT_REC = (ushort) ( (GI_STATUS_COUNT_REC + 1) ) ; 
-        __context__.SourceCodeLine = 432;
+        __context__.SourceCodeLine = 439;
         GI_STATUS_COUNT_QUE = (ushort) ( (GI_STATUS_COUNT_QUE + 1) ) ; 
         
         
@@ -1094,15 +1115,15 @@ object ERROR_NOCOM_OnPush_7 ( Object __EventInfo__ )
     {
         SplusExecutionContext __context__ = SplusThreadStartCode(__SignalEventArg__);
         
-        __context__.SourceCodeLine = 437;
+        __context__.SourceCodeLine = 444;
         GI_ALLOWCMD = (ushort) ( 0 ) ; 
-        __context__.SourceCodeLine = 438;
+        __context__.SourceCodeLine = 445;
         SETRECORDERSTATE (  __context__ , "") ; 
-        __context__.SourceCodeLine = 439;
+        __context__.SourceCodeLine = 446;
         CLEARRECORDINGDATA (  __context__  ) ; 
-        __context__.SourceCodeLine = 440;
+        __context__.SourceCodeLine = 447;
         CLEARQUERECORDINGDATA (  __context__  ) ; 
-        __context__.SourceCodeLine = 441;
+        __context__.SourceCodeLine = 448;
         UPDATERECORDINGDATA (  __context__  ) ; 
         
         
@@ -1119,31 +1140,31 @@ public override object FunctionMain (  object __obj__ )
     {
         SplusExecutionContext __context__ = SplusFunctionMainStartCode();
         
-        __context__.SourceCodeLine = 451;
-        WaitForInitializationComplete ( ) ; 
-        __context__.SourceCodeLine = 452;
-        GI_ALLOWCMD = (ushort) ( 0 ) ; 
-        __context__.SourceCodeLine = 453;
-        GS_TEMP_PANOPTO_SERIAL_RX  .UpdateValue ( ""  ) ; 
-        __context__.SourceCodeLine = 454;
-        _SplusNVRAM.GS_RECORDERSTATE  .UpdateValue ( ""  ) ; 
-        __context__.SourceCodeLine = 455;
-        _SplusNVRAM.GS_RECORDERSTATE_SIMPLE  .UpdateValue ( ""  ) ; 
-        __context__.SourceCodeLine = 457;
-        GI_STATUS_COUNT_REC = (ushort) ( 0 ) ; 
         __context__.SourceCodeLine = 458;
-        GI_STATUS_COUNT_QUE = (ushort) ( 0 ) ; 
+        WaitForInitializationComplete ( ) ; 
+        __context__.SourceCodeLine = 459;
+        GI_ALLOWCMD = (ushort) ( 0 ) ; 
         __context__.SourceCodeLine = 460;
-        GS_RECORDING_TAG [ 1 ]  .UpdateValue ( "Id"  ) ; 
+        GS_TEMP_PANOPTO_SERIAL_RX  .UpdateValue ( ""  ) ; 
         __context__.SourceCodeLine = 461;
-        GS_RECORDING_TAG [ 2 ]  .UpdateValue ( "Name"  ) ; 
+        _SplusNVRAM.GS_RECORDERSTATE  .UpdateValue ( ""  ) ; 
         __context__.SourceCodeLine = 462;
-        GS_RECORDING_TAG [ 3 ]  .UpdateValue ( "StartTime"  ) ; 
-        __context__.SourceCodeLine = 463;
-        GS_RECORDING_TAG [ 4 ]  .UpdateValue ( "EndTime"  ) ; 
+        _SplusNVRAM.GS_RECORDERSTATE_SIMPLE  .UpdateValue ( ""  ) ; 
         __context__.SourceCodeLine = 464;
-        GS_RECORDING_TAG [ 5 ]  .UpdateValue ( "MinutesUntilStartTime"  ) ; 
+        GI_STATUS_COUNT_REC = (ushort) ( 0 ) ; 
         __context__.SourceCodeLine = 465;
+        GI_STATUS_COUNT_QUE = (ushort) ( 0 ) ; 
+        __context__.SourceCodeLine = 467;
+        GS_RECORDING_TAG [ 1 ]  .UpdateValue ( "Id"  ) ; 
+        __context__.SourceCodeLine = 468;
+        GS_RECORDING_TAG [ 2 ]  .UpdateValue ( "Name"  ) ; 
+        __context__.SourceCodeLine = 469;
+        GS_RECORDING_TAG [ 3 ]  .UpdateValue ( "StartTime"  ) ; 
+        __context__.SourceCodeLine = 470;
+        GS_RECORDING_TAG [ 4 ]  .UpdateValue ( "EndTime"  ) ; 
+        __context__.SourceCodeLine = 471;
+        GS_RECORDING_TAG [ 5 ]  .UpdateValue ( "MinutesUntilStartTime"  ) ; 
+        __context__.SourceCodeLine = 472;
         GS_RECORDING_TAG [ 6 ]  .UpdateValue ( "MinutesUntilEndTime"  ) ; 
         
         
