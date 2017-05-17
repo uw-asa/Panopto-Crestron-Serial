@@ -1,0 +1,484 @@
+/*
+Dealer Name:         University of Washington - CTE, UW-IT
+Programmer:          Tim Batzel
+
+*/
+
+
+/*******************************************************************************************
+Compiler Directives
+*******************************************************************************************/
+#CATEGORY "46" "UW/CTE Custom Modules"
+#PRINT_TO_TRACE
+#DEFAULT_VOLATILE
+#ENABLE_STACK_CHECKING
+#ENABLE_TRACE
+#ENCODING_ASCII
+#DEFINE_CONSTANT tags 6
+#DEFINE_CONSTANT timeout 30 // Seconds timeout, for clearing no-command flag, if nothing else clears it.
+           
+
+#HELP_BEGIN
+	For use with UW-CTE's Panopto Remote Recorder Light w/ Serial Service
+	https://github.com/uw-it-cte/Panopto-RR-Light-Service-With-Installer/
+#HELP_END
+
+
+/**********     INPUTS / OUTPUTS     **********/                       
+                           
+DIGITAL_INPUT get_status, _SKIP_;
+DIGITAL_INPUT cmd_start, cmd_stop, cmd_pause, cmd_resume, cmd_extend, _SKIP_;       
+DIGITAL_INPUT error_NoCom;             
+DIGITAL_OUTPUT Recording_AboutToStart;
+BUFFER_INPUT panopto_serial_rx[1000];
+ANALOG_INPUT enable_adhoc_start, debug;
+
+DIGITAL_OUTPUT _SKIP_, show_cmd_start, show_cmd_stop, show_cmd_pause, show_cmd_resume, show_cmd_extend, _SKIP_;
+DIGITAL_OUTPUT has_recording_data, has_queued_data, _SKIP_;
+STRING_OUTPUT panopto_serial_tx, _SKIP_;
+STRING_OUTPUT RecorderState, RecorderStateSimple, _SKIP_;
+STRING_OUTPUT Recording_Id, Recording_Name, Recording_StartTime, Recording_EndTime, Recording_MinutesUntilStartTime, Recording_MinutesUntilEndTime, _SKIP_;
+STRING_OUTPUT Queued_Recording_Id, Queued_Recording_Name, Queued_Recording_StartTime, Queued_Recording_EndTime, Queued_Recording_MinutesUntilStartTime, Queued_Recording_MinutesUntilEndTime;
+
+
+
+/**********     GLOBALS     **********/
+
+VOLATILE INTEGER gi_allowCmd;
+VOLATILE INTEGER gi_status_count_rec, gi_status_count_que;
+VOLATILE STRING gs_temp_panopto_serial_rx[1000];
+NONVOLATILE STRING gs_RecorderState[50], gs_RecorderState_Simple[50];
+VOLATILE STRING gs_recording_tag[tags][50];
+VOLATILE STRING gs_Recording_Id[50], gs_Recording_Name[50], gs_Recording_StartTime[30], gs_Recording_EndTime[30], gs_Recording_MinutesUntilStartTime[10], gs_Recording_MinutesUntilEndTime[10];
+VOLATILE STRING gs_Queued_Recording_Id[50], gs_Queued_Recording_Name[50], gs_Queued_Recording_StartTime[30], gs_Queued_Recording_EndTime[30], gs_Queued_Recording_MinutesUntilStartTime[10], gs_Queued_Recording_MinutesUntilEndTime[10];
+   
+                     
+              
+
+/**********     FUNCTIONS     **********/
+
+
+STRING_FUNCTION DebugPrintHex(STRING sDebug) {
+    STRING sTemp[100], sDebugHex[100];
+	INTEGER nextChar;
+	sTemp = sDebug;  // GETC seems to be emptying the string in the calling function as well.
+	DO {
+		nextChar = GETC(sTemp);
+		if 		(nextChar = 0x0A) 	{sDebugHex = sDebugHex + "\\x0A";}
+		else if (nextChar = 0x0D) 	{sDebugHex = sDebugHex + "\\x0D";}
+		else 						{sDebugHex = sDebugHex + CHR(nextChar);}
+		} UNTIL (LEN(sTemp) = 0);
+    RETURN (sDebugHex);	
+	}
+
+                        
+SIGNED_INTEGER_FUNCTION fun_ATOSI (STRING valString) {
+	SIGNED_INTEGER valInt;                                
+	valInt = ATOI(valString);
+	if(FIND("-", valString)) {valInt = valInt*(-1);}
+	RETURN(valInt);
+	}
+                          
+
+FUNCTION ClearRecordingData(){
+	gs_Recording_Id = "";
+	gs_Recording_Name = "";
+	gs_Recording_StartTime = "";
+	gs_Recording_EndTime = "";
+	gs_Recording_MinutesUntilStartTime = "";
+	gs_Recording_MinutesUntilEndTime = "";
+	}
+
+FUNCTION ClearQueRecordingData(){
+	gs_Queued_Recording_Id = "";
+	gs_Queued_Recording_Name = "";
+	gs_Queued_Recording_StartTime = "";
+	gs_Queued_Recording_EndTime = "";
+	gs_Queued_Recording_MinutesUntilStartTime = "";
+	gs_Queued_Recording_MinutesUntilEndTime = "";
+	}
+                       
+
+
+
+
+FUNCTION ShowCommands() {
+	SIGNED_INTEGER RecToEnd, QueToStart;
+	RecToEnd = fun_ATOSI(gs_Recording_MinutesUntilEndTime);
+	QueToStart = fun_ATOSI(gs_Queued_Recording_MinutesUntilStartTime);
+
+	if(gi_allowCmd){        
+                                                               
+		// Show Start 
+		if ((gs_RecorderState = "PreviewingWithNextSchedule") && (QueToStart) && (QueToStart < 6) ){
+			show_cmd_start = 1;
+			}
+		else if ((gs_RecorderState = "PreviewingNoNextSchedule") && (enable_adhoc_start)) {
+			show_cmd_start = 1;
+			} 
+		else {show_cmd_start = 0;}
+
+		// Show Stop
+		if ((gs_RecorderState = "Recording") || (gs_RecorderState = "Paused")) {
+			show_cmd_stop = 1;
+			}
+		else {show_cmd_stop = 0;}
+
+		// Show Pause
+		if (gs_RecorderState = "Recording") {
+			show_cmd_pause = 1;
+			}
+		else {show_cmd_pause = 0;}
+
+		// Show Resume
+		if (gs_RecorderState = "Paused") {
+			show_cmd_resume = 1;
+			}
+		else {show_cmd_resume = 0;}
+
+		// Show Extend  
+		if (((gs_RecorderState = "Recording") || (gs_RecorderState = "Paused")) && ((RecToEnd) && (QueToStart) && ((RecToEnd+7)<QueToStart) && (RecToEnd<20))) {
+			show_cmd_extend = 1;
+			}
+		else {show_cmd_extend = 0;}
+
+		}	
+	else { // Don't enable command buttons.
+		show_cmd_start = 0;
+		show_cmd_stop = 0;
+		show_cmd_pause = 0;
+		show_cmd_resume = 0;
+		show_cmd_extend = 0;
+		}
+
+	}
+
+
+
+
+
+
+FUNCTION UpdateRecordingData() {
+
+	// Clear the Queued data, if same as the Active data
+	if (gs_Recording_Id = gs_Queued_Recording_Id) {
+		ClearQueRecordingData();
+		}
+
+	// Clear the recording data, if we are not recording.
+	if (!(  (gs_RecorderState_Simple = "Recording") || (gs_RecorderState_Simple = "Paused")   ))  {
+		ClearRecordingData();
+		}
+
+	if (gi_status_count_rec > 5) {
+		ClearRecordingData();
+		gi_status_count_rec = 1;
+		}
+
+	if (gi_status_count_que > 5) {
+		ClearQueRecordingData();
+		gi_status_count_que = 1;
+		}
+
+                 
+	if ((gs_Queued_Recording_MinutesUntilStartTime = "2") || (gs_Queued_Recording_MinutesUntilStartTime = "1") || (gs_Queued_Recording_MinutesUntilStartTime = "0") ){
+		Recording_AboutToStart = 1;
+		}
+	else {Recording_AboutToStart = 0;}
+
+
+	Recording_Id = gs_Recording_Id;
+	Recording_Name = gs_Recording_Name;
+	Recording_StartTime = gs_Recording_StartTime;
+	Recording_EndTime = gs_Recording_EndTime;
+	Recording_MinutesUntilStartTime = gs_Recording_MinutesUntilStartTime;
+	Recording_MinutesUntilEndTime = gs_Recording_MinutesUntilEndTime;
+
+	Queued_Recording_Id = gs_Queued_Recording_Id;
+	Queued_Recording_Name = gs_Queued_Recording_Name;
+	Queued_Recording_StartTime = gs_Queued_Recording_StartTime;
+	Queued_Recording_EndTime = gs_Queued_Recording_EndTime;
+	Queued_Recording_MinutesUntilStartTime = gs_Queued_Recording_MinutesUntilStartTime;
+	Queued_Recording_MinutesUntilEndTime = gs_Queued_Recording_MinutesUntilEndTime;
+
+
+	// Is there data to show?
+	if (LEN(gs_Recording_Id)){has_recording_data=1;} else {has_recording_data = 0;}
+	if (LEN(gs_Queued_Recording_Id)){has_queued_data=1;} else {has_queued_data = 0;}
+
+
+	ShowCommands();
+	}
+
+
+
+
+
+FUNCTION SendCommand(STRING sCmd){	
+	INTEGER NowTime, NewTime, OldTime, DiffTime;
+	panopto_serial_tx = sCmd + "\n";
+	gi_allowCmd = 0;
+	ShowCommands();        
+
+	// Clear the no command flag after (timeout) seconds, if it doesn't get cleared elsewhere.
+	NowTime = GETHSECONDS();	
+	NewTime = NowTime + (timeout*100);
+
+	if (NewTime > NowTime){  // NewTime didn't roll over
+		WHILE ( (gi_allowCmd = 0) && (NewTime > NowTime) ){
+			NowTime = GETHSECONDS();
+			}
+		}
+	else if (NewTime < NowTime) {  // NewTime rolled over, 
+		OldTime = NowTime;
+		WHILE (gi_allowCmd = 0) {
+            if ((NowTime > NewTime) && (NowTime < OldTime) ) {
+				gi_allowCmd = 1;
+				}
+            NowTime = GETHSECONDS();
+			}
+		}
+
+	gi_allowCmd = 1;
+	ShowCommands();
+	}
+
+
+
+                   
+
+
+FUNCTION SetRecorderState(STRING sState) {
+	gs_RecorderState = sState;
+	RecorderState = gs_RecorderState;
+
+	// If the state is OK, and has changed, allow new commands to be sent.	
+	if 		(sState = "Disconnected")				{gi_allowCmd = 0;}
+	else if (sState = "Dormant") 					{gi_allowCmd = 0;}
+	else if (sState = "Faulted") 					{gi_allowCmd = 0;}
+	else if (sState = "Init") 	 					{gi_allowCmd = 0;}
+	else if (sState = "TransitionAnyToRecording") 	{gi_allowCmd = 0;}
+	else if (sState = "TransitionAnyToPause")	 	{gi_allowCmd = 0;}
+	else if (sState = "TransitionRecordingToPause")	{gi_allowCmd = 0;}
+	else if (sState = "TransitionRecordingToStop")	{gi_allowCmd = 0;}
+	else {
+		if (sState <> gs_RecorderState_Simple) {gi_allowCmd = 1;}
+		}
+	
+    // Produce "Simple" state messages
+	if		(sState = "PreviewingNoNextSchedule") 		{gs_RecorderState_Simple = "Previewing";}
+	else if (sState = "PreviewingWithNextSchedule") 	{gs_RecorderState_Simple = "Previewing";}
+	else if (sState = "TransitionAnyToRecording") 		{gs_RecorderState_Simple = "Recording";}
+	else if (sState = "TransitionAnyToPause")	 		{gs_RecorderState_Simple = "Recording";}
+	else if (sState = "TransitionRecordingToPause")		{gs_RecorderState_Simple = "Paused";}
+	else if (sState = "TransitionRecordingToStop")		{gs_RecorderState_Simple = "Recording";}
+	else if (sState = "Stopped")						{gs_RecorderState_Simple = "Previewing";}
+	else 												{gs_RecorderState_Simple = sState;}
+
+	RecorderStateSimple = gs_RecorderState_Simple;
+
+	ShowCommands();
+
+	}
+                
+
+
+
+FUNCTION ParseRecordingData(STRING sRoot, STRING sFindTag, INTEGER tag, STRING sData, INTEGER queued){
+	STRING temp[50];
+	INTEGER i1, i2;
+
+	i1 = LEN(sFindTag) + 1;
+	i2 = LEN(sData) - i1;
+	temp = MID(sData, i1 , i2 );
+	                              
+	if (queued) 	{
+		if(FIND(sRoot, sData)) {
+			SWITCH(tag){
+	        	CASE (1) : {gs_Queued_Recording_Id = temp; gi_status_count_que = 0;}
+				CASE (2) : {gs_Queued_Recording_Name = temp;}
+				CASE (3) : {gs_Queued_Recording_StartTime = temp;}
+				CASE (4) : {gs_Queued_Recording_EndTime = temp;}
+				CASE (5) : {gs_Queued_Recording_MinutesUntilStartTime = temp;}
+				CASE (6) : {gs_Queued_Recording_MinutesUntilEndTime = temp;}
+				}
+			}
+		}
+	else {
+		if(FIND(sRoot, sData)) {
+			SWITCH(tag){
+	        	CASE (1) : {gs_Recording_Id = temp; gi_status_count_rec = 0;}
+				CASE (2) : {gs_Recording_Name = temp;}
+				CASE (3) : {gs_Recording_StartTime = temp;}
+				CASE (4) : {gs_Recording_EndTime = temp;}
+				CASE (5) : {gs_Recording_MinutesUntilStartTime = temp;}
+				CASE (6) : {gs_Recording_MinutesUntilEndTime = temp;}
+				}
+			}
+		}
+	}
+
+
+
+
+             
+
+FUNCTION CheckRecordingData(STRING sRoot, STRING sData, INTEGER queued) {
+	INTEGER i;
+	STRING FindTag[100];
+     	   FOR(i = 1 to (tags)) {
+			MAKESTRING(FindTag, "%s%s: ", sRoot, gs_recording_tag[i]);
+			if(FIND(FindTag, sData))  {ParseRecordingData(sRoot, FindTag, i, sData, queued);}       
+			PROCESSLOGIC();
+			}
+	}
+
+
+
+
+
+FUNCTION ParseData(STRING sData){
+                                       
+	if(debug >= 1) {PRINT ("ParseData: %s", DebugPrintHex(sData));}
+
+	// Recorder States
+
+	// Legacy from v1.1 light service
+	if (sData = "Disconnected OK\x0A")									{SetRecorderState("Disconnected");}
+
+	if (find("Recorder", sData)) {
+	    if      (sData = "RecorderPreviewingNoNextSchedule OK\x0A") 	{SetRecorderState("PreviewingNoNextSchedule");}
+		else if (sData = "RecorderPreviewingWithNextSchedule OK\x0A") 	{SetRecorderState("PreviewingWithNextSchedule");}
+		else if (sData = "RecorderRecording OK\x0A") 					{SetRecorderState("Recording");}
+		else if (sData = "RecorderPaused OK\x0A") 						{SetRecorderState("Paused");}
+		else if (sData = "RecorderStopped OK\x0A") 						{SetRecorderState("Stopped");}
+		else if (sData = "RecorderDormant OK\x0A") 						{SetRecorderState("Dormant");}
+		else if (sData = "RecorderFaulted OK\x0A") 						{SetRecorderState("Faulted");}
+		else if (sData = "RecorderDisconnected OK\x0A") 				{SetRecorderState("Disconnected");}
+
+		else if (sData = "Recorder-Status: Init\x0A") 						{SetRecorderState("Init");}
+		else if (sData = "Recorder-Status: PreviewingNoNextSchedule\x0A") 	{SetRecorderState("PreviewingNoNextSchedule");}
+		else if (sData = "Recorder-Status: PreviewingWithNextSchedule\x0A") {SetRecorderState("PreviewingWithNextSchedule");}
+		else if (sData = "Recorder-Status: TransitionAnyToRecording\x0A") 	{SetRecorderState("TransitionAnyToRecording");}
+		else if (sData = "Recorder-Status: Recording\x0A") 					{SetRecorderState("Recording");}
+		else if (sData = "Recorder-Status: TransitionRecordingToPause\x0A") {SetRecorderState("TransitionRecordingToPause");}
+		else if (sData = "Recorder-Status: Paused\x0A") 					{SetRecorderState("Paused");}
+		else if (sData = "Recorder-Status: TransitionPausedToStop\x0A") 	{SetRecorderState("TransitionPausedToStop");}
+		else if (sData = "Recorder-Status: TransitionRecordingToStop\x0A") 	{SetRecorderState("TransitionRecordingToStop");}
+		else if (sData = "Recorder-Status: Stopped\x0A") 					{SetRecorderState("Stopped");}
+		else if (sData = "Recorder-Status: Dormant\x0A") 					{SetRecorderState("Dormant");}
+		else if (sData = "Recorder-Status: Faulted\x0A") 					{SetRecorderState("Faulted");}
+		else if (sData = "Recorder-Status: Disconnected\x0A") 				{SetRecorderState("Disconnected");}
+        
+		// Legacy from v1.1 light service
+		else if (sData = "RecorderPreviewing OK\x0A")					{SetRecorderState("PreviewingNoNextSchedule");}
+		else if (sData = "RecorderPreviewingQueued OK\x0A")				{SetRecorderState("PreviewingWithNextSchedule");}
+		else if (sData = "RecorderRunning OK\x0A")						{SetRecorderState("Dormant");}
+
+		// Legacy from v1.1 light service
+		else if (sData = "Recorder-Status: RRDisconnected\x0A") 		{SetRecorderState("Disconnected");}
+		else if (sData = "Recorder-Status: RRPreviewing\x0A") 			{SetRecorderState("PreviewingNoNextSchedule");}
+		else if (sData = "Recorder-Status: RRPreviewingQueued\x0A")		{SetRecorderState("PreviewingWithNextSchedule");}
+		else if (sData = "Recorder-Status: RRRecording\x0A") 			{SetRecorderState("Recording");}
+		else if (sData = "Recorder-Status: RRPaused\x0A") 				{SetRecorderState("Paused");}
+		else if (sData = "Recorder-Status: RRStopped\x0A") 				{SetRecorderState("Stopped");}
+		else if (sData = "Recorder-Status: RRRunning\x0A") 				{SetRecorderState("Dormant");}
+		else if (sData = "Recorder-Status: RRFaulted\x0A") 				{SetRecorderState("Faulted");}
+		else if (sData = "Recorder-Status: RRStoppingPaused\x0A") 		{SetRecorderState("TransitionPausedToStop");}
+		else if (sData = "Recorder-Status: RRStoppingRecord\x0A") 		{SetRecorderState("TransitionRecordingToStop");}
+
+		}
+                                
+
+	// Recording Info         
+	// Current Active Recording
+	if ((FIND("CurrentRecording-", sData)) &&  ((gs_RecorderState_Simple = "Recording")||(gs_RecorderState_Simple = "Paused"))) 	{
+		CheckRecordingData("CurrentRecording-", sData, 0);
+		}
+	// Queued Pending Recording
+	else if ( FIND("NextRecording-", sData) ) {
+		CheckRecordingData("NextRecording-", sData, 1);
+		}
+	// Legacy from v1.1 light service - 	// Current Active Recording
+	else if ((FIND("Recording-", sData)) &&  ((gs_RecorderState_Simple = "Recording")||(gs_RecorderState_Simple = "Paused"))) 	{
+		CheckRecordingData("Recording-", sData, 0);
+		}
+	// Legacy from v1.1 light service - 	// Queued Pending Recording
+	else if ( FIND("Queued-", sData) ) {
+		CheckRecordingData("Queued-", sData, 1);
+		}      
+
+    
+	}  
+
+
+
+      
+/**********     EVENTS     **********/
+
+
+THREADSAFE CHANGE panopto_serial_rx{
+	INTEGER nextChar;
+	DO {
+		nextChar = getc(panopto_serial_rx); 
+		gs_temp_panopto_serial_rx = gs_temp_panopto_serial_rx + chr(nextChar);
+		if (nextChar = 0x0A) {
+			ParseData(gs_temp_panopto_serial_rx);
+			gs_temp_panopto_serial_rx = "";
+			DELAY(1);  // Delay added, to prevent occasional string loss.
+			}
+		DELAY(1);  // Delay added, to prevent occasional string loss.
+		} UNTIL (len(panopto_serial_rx) = 0);
+	UpdateRecordingData();
+	}
+                                              
+
+
+
+PUSH cmd_start 	{SendCommand("START");}
+PUSH cmd_stop 	{SendCommand("STOP");}
+PUSH cmd_pause 	{SendCommand("PAUSE");}
+PUSH cmd_resume	{SendCommand("RESUME");}
+PUSH cmd_extend	{SendCommand("EXTEND");}
+             
+
+PUSH get_status	{
+	panopto_serial_tx = "STATUS\n";
+	gi_status_count_rec = gi_status_count_rec + 1;
+	gi_status_count_que = gi_status_count_que + 1;
+	}
+             
+
+PUSH error_NoCom {
+	gi_allowCmd = 0;
+	SetRecorderState(""); // Set to empty.
+	ClearRecordingData();
+	ClearQueRecordingData();
+	UpdateRecordingData();
+	}
+                             
+
+
+
+/**********     INITIALIZE     **********/
+
+
+Function Main(){
+    WaitForInitializationComplete();
+	gi_allowCmd = 0;
+	gs_temp_panopto_serial_rx = "";
+	gs_RecorderState = "";
+	gs_RecorderState_Simple = "";
+
+	gi_status_count_rec = 0;
+	gi_status_count_que = 0;
+
+	gs_recording_tag[1] = "Id";
+	gs_recording_tag[2] = "Name";
+	gs_recording_tag[3] = "StartTime";
+	gs_recording_tag[4] = "EndTime";
+	gs_recording_tag[5] = "MinutesUntilStartTime";
+	gs_recording_tag[6] = "MinutesUntilEndTime";
+
+	}
+

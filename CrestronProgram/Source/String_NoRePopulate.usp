@@ -1,0 +1,41 @@
+/*
+University of Washington
+Classroom Technology & Events
+Tim Batzel*/
+
+//Compiler Directives
+
+#Default_Volatile
+#Enable_Trace
+#Print_to_Trace
+#CATEGORY "46" "UW/CTE Custom Modules"
+
+#define_constant debug 0
+#define_constant maxCount 16
+#define_constant maxLength 100
+
+//IO Variables
+
+string_input rx[maxCount][maxLength];
+string_output tx[maxCount];
+
+//Global Variables
+
+VOLATILE STRING gs_rx[maxCount][maxLength];
+
+//Functions
+change rx {
+	INTEGER i;
+	i = GetLastModifiedArrayIndex ();
+	if( gs_rx[i] != rx[i] ){
+		gs_rx[i] = rx[i];
+		tx[i] = gs_rx[i];
+		}
+	}
+
+
+//Main (Startup Code)
+
+Function Main(){
+    waitforinitializationcomplete();
+    }
