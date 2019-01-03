@@ -16,6 +16,8 @@ Compiler Directives
 #ENCODING_ASCII
 #DEFINE_CONSTANT tags 6
 #DEFINE_CONSTANT timeout 30 // Seconds timeout, for clearing no-command flag, if nothing else clears it.
+
+#DEFINE_CONSTANT debug 0
            
 
 #HELP_BEGIN
@@ -30,8 +32,9 @@ DIGITAL_INPUT get_status, _SKIP_;
 DIGITAL_INPUT cmd_start, cmd_stop, cmd_pause, cmd_resume, cmd_extend, _SKIP_;       
 DIGITAL_INPUT error_NoCom;             
 DIGITAL_OUTPUT Recording_AboutToStart;
-BUFFER_INPUT panopto_serial_rx[1000];
-ANALOG_INPUT enable_adhoc_start, debug;
+BUFFER_INPUT panopto_serial_rx[1500];
+ANALOG_INPUT enable_adhoc_start;
+//ANALOG_INPUT debug;
 
 DIGITAL_OUTPUT _SKIP_, show_cmd_start, show_cmd_stop, show_cmd_pause, show_cmd_resume, show_cmd_extend, _SKIP_;
 DIGITAL_OUTPUT has_recording_data, has_queued_data, _SKIP_;
@@ -46,11 +49,11 @@ STRING_OUTPUT Queued_Recording_Id, Queued_Recording_Name, Queued_Recording_Start
 
 VOLATILE INTEGER gi_allowCmd;
 VOLATILE INTEGER gi_status_count_rec, gi_status_count_que;
-VOLATILE STRING gs_temp_panopto_serial_rx[1000];
-NONVOLATILE STRING gs_RecorderState[50], gs_RecorderState_Simple[50];
-VOLATILE STRING gs_recording_tag[tags][50];
-VOLATILE STRING gs_Recording_Id[50], gs_Recording_Name[50], gs_Recording_StartTime[30], gs_Recording_EndTime[30], gs_Recording_MinutesUntilStartTime[10], gs_Recording_MinutesUntilEndTime[10];
-VOLATILE STRING gs_Queued_Recording_Id[50], gs_Queued_Recording_Name[50], gs_Queued_Recording_StartTime[30], gs_Queued_Recording_EndTime[30], gs_Queued_Recording_MinutesUntilStartTime[10], gs_Queued_Recording_MinutesUntilEndTime[10];
+VOLATILE STRING gs_temp_panopto_serial_rx[1500];
+NONVOLATILE STRING gs_RecorderState[75], gs_RecorderState_Simple[75];
+VOLATILE STRING gs_recording_tag[tags][75];
+VOLATILE STRING gs_Recording_Id[75], gs_Recording_Name[150], gs_Recording_StartTime[50], gs_Recording_EndTime[50], gs_Recording_MinutesUntilStartTime[20], gs_Recording_MinutesUntilEndTime[20];
+VOLATILE STRING gs_Queued_Recording_Id[75], gs_Queued_Recording_Name[150], gs_Queued_Recording_StartTime[50], gs_Queued_Recording_EndTime[50], gs_Queued_Recording_MinutesUntilStartTime[20], gs_Queued_Recording_MinutesUntilEndTime[20];
    
                      
               
@@ -285,7 +288,7 @@ FUNCTION SetRecorderState(STRING sState) {
 
 
 FUNCTION ParseRecordingData(STRING sRoot, STRING sFindTag, INTEGER tag, STRING sData, INTEGER queued){
-	STRING temp[50];
+	STRING temp[250];
 	INTEGER i1, i2;
 
 	i1 = LEN(sFindTag) + 1;
@@ -323,15 +326,19 @@ FUNCTION ParseRecordingData(STRING sRoot, STRING sFindTag, INTEGER tag, STRING s
 
              
 
-FUNCTION CheckRecordingData(STRING sRoot, STRING sData, INTEGER queued) {
+FUNCTION CheckRecordingData(STRING sRoot, STRING sData, INTEGER queued) 
+{
 	INTEGER i;
 	STRING FindTag[100];
-     	   FOR(i = 1 to (tags)) {
-			MAKESTRING(FindTag, "%s%s: ", sRoot, gs_recording_tag[i]);
-			if(FIND(FindTag, sData))  {ParseRecordingData(sRoot, FindTag, i, sData, queued);}       
-			PROCESSLOGIC();
-			}
+	FOR(i = 1 to (tags))
+	{
+		MAKESTRING(FindTag, "%s%s: ", sRoot, gs_recording_tag[i]);
+		if(FIND(FindTag, sData))  
+		{
+			ParseRecordingData(sRoot, FindTag, i, sData, queued);
+		}       
 	}
+}
 
 
 
@@ -408,30 +415,38 @@ FUNCTION ParseData(STRING sData){
 		CheckRecordingData("Queued-", sData, 1);
 		}      
 
-    
+	UpdateRecordingData();
 	}  
 
 
 
       
 /**********     EVENTS     **********/
+      
 
-
-THREADSAFE CHANGE panopto_serial_rx{
-	INTEGER nextChar;
-	DO {
-		nextChar = getc(panopto_serial_rx); 
-		gs_temp_panopto_serial_rx = gs_temp_panopto_serial_rx + chr(nextChar);
-		if (nextChar = 0x0A) {
-			ParseData(gs_temp_panopto_serial_rx);
-			gs_temp_panopto_serial_rx = "";
-			DELAY(1);  // Delay added, to prevent occasional string loss.
+THREADSAFE CHANGE panopto_serial_rx
+{
+	WHILE(1)
+	{
+		TRY
+		{
+			gs_temp_panopto_serial_rx = GATHER("\x0A", panopto_serial_rx);             
+			if (LEN(gs_temp_panopto_serial_rx) > 0)
+			{
+				ParseData(gs_temp_panopto_serial_rx);
+            	gs_temp_panopto_serial_rx = "";
 			}
-		DELAY(1);  // Delay added, to prevent occasional string loss.
-		} UNTIL (len(panopto_serial_rx) = 0);
-	UpdateRecordingData();
+		}
+		CATCH
+		{
+			generateusererror("Error processing data from CHANGE panopto_serial_rx");
+		}
 	}
-                                              
+}
+
+
+
+                                  
 
 
 
